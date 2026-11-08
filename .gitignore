@@ -1,0 +1,5 @@
+# 运行时数据（含 API 使用记录，勿入库）
+.data/
+
+# node
+node_modules/
