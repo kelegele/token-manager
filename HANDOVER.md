@@ -23,7 +23,7 @@
 ├── scripts/
 │   ├── manager.js          # ~640 行，核心：report（命名参数）/tokens/balance/estimate/providers/history
 │   ├── scheduler.js        # ~210 行，定时余额告警（阈值+冷却+币种符号）
-│   └── session-tracker.js  # ~240 行，跨会话用量（sessions 单一真相源，币种分组）
+│   └── session-tracker.js  # ~240 行（scripts/agent_hook.py 为交接模式工具，已从发布包排除），跨会话用量（sessions 单一真相源，币种分组）
 ├── test/smoke.test.js  # node --test 冒烟（11 测试）
 ├── _meta.json          # ClawHub 注册表元数据（ownerId/slug/version 1.2.0）
 ├── .clawhub/origin.json # 安装来源与 fingerprint，勿手改
@@ -35,6 +35,8 @@
 - git 仓：commit `8d996f2`（v1.2.0 原样基线，路径为嵌套旧布局）→ `c63d961`（扁平化到根，内容同 v1.2.0）。diff 基线用 `git diff c63d961`。
 - `3c07904`：交接模式（agent_hook.py/AGENTS.md/.agent-handoff.json，项目工具非 skill 内容，发布时排除）。
 - `80345a4`（2026-11-09）：缺陷修复 + 价格刷新 + DeepSeek + SKILL.md 瘦身（详见 §3.1）。`node --test test/` 11/11 绿。
+- `3498afa` + 发布（2026-11-09）：GitHub 仓库 https://github.com/kelegele/token-manager 已建（public，main 已推）；ClawHub 发布 **1.3.1**（latest，versionId k978edszmer3vxh0y8kv243gjn8hvp2m）。
+  - 发布坑位：① 包含清单=SKILL.md+scripts/3个核心 js，共 4 文件；skill-card.md 不进发布包（平台卡片存档）。② `scripts/agent_hook.py`（交接模式项目工具）因在 scripts/ 子目录躲过首轮排除，随 1.3.0 误发上线；`.clawhubignore` 补 `scripts/agent_hook.py` 后重发 1.3.1，1.3.0 版本号被占用无法覆盖、留着但 latest 已指向干净包。③ `.clawhubignore` 是发布排除机制（支持该文件，CLI v0.25.1）。④ clawhub 已登录（whoami=kelegele，token 本机已存，无需再 device flow）；发布命令：`HTTPS_PROXY=$(webget --proxy-url) npx -y clawhub@latest publish . --version X.Y.Z --source-repo kelegele/token-manager --source-commit <sha> --source-ref main --changelog "..." --json`，成功后状态 pending-publication，扫描约 3-5 分钟后上线，`clawhub install token-manager --dir /tmp/x` 验证包内容。
 
 ### §3.1 迭代记录（80345a4）
 
@@ -46,7 +48,7 @@
 
 ## 4. 数据口径与勿动约定
 
-- 线上 latest = **1.2.0**（Updated 2026-05-11，Moderate: CLEAN，License MIT-0）。
+- 线上 latest = **1.3.1**（2026-11-09 发布；1.2.0/1.3.0 为历史版本）。
 - `.clawhub/origin.json` 与 `_meta.json` 是 ClawHub 工具链状态：不手改、不删（发布/更新比对要用）。
 - skill 功能口径（来自 SKILL.md）：LLM token 用量监控 + 省钱建议，支持 Kimi/OpenAI/Anthropic/Gemini/本地模型；P0 定时告警、P1 OpenClaw 内置工具注册、P2 跨会话分析。
 - 运行时依赖 env：`MOONSHOT_API_KEY` 等（SKILL.md Quick Start 所列）；本机未配置，静态检查用 `node --check scripts/*.js`。

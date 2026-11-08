@@ -7,3 +7,4 @@ _meta.json
 .claude/
 node_modules/
 .data/
+scripts/agent_hook.py
