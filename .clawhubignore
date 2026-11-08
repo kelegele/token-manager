@@ -1,0 +1,9 @@
+# 本地项目工具与交接文档，不属于 skill 内容
+HANDOVER.md
+AGENTS.md
+.agent-handoff.json
+test/
+_meta.json
+.claude/
+node_modules/
+.data/
